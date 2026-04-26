@@ -5,22 +5,21 @@ const authRoutes = require('../modules/auth/auth.routes');
 const userRoutes = require('../modules/users/user.routes');
 const courseRoutes = require('../modules/courses/course.routes');
 const enrollmentRoutes = require('../modules/enrollments/enrollment.routes');
-const paymentRoutes = require('../modules/payments/payment.routes');
-const progressRoutes = require('../modules/progress/progress.routes');
 const assessmentRoutes = require('../modules/assessments/assessment.routes');
-const reviewRoutes = require('../modules/reviews/review.routes');
 const notificationRoutes = require('../modules/notifications/notification.routes');
-const wishlistRoutes = require('../modules/wishlist/wishlist.routes');
+const adminRoutes = require('../modules/admin/admin.routes');
 
-router.use('/progress', progressRoutes);
+// TEST ROUTE
+router.get('/test', (req, res) => {
+  res.json({ message: 'API is working 🚀' });
+});
+
 router.use('/assessments', assessmentRoutes);
-router.use('/reviews', reviewRoutes);
 router.use('/notifications', notificationRoutes);
-router.use('/wishlist', wishlistRoutes);
-router.use('/payments', paymentRoutes);
 router.use('/enrollments', enrollmentRoutes);
 router.use('/courses', courseRoutes);
 router.use('/users', userRoutes);
 router.use('/auth', authRoutes);
+router.use('/admin', adminRoutes);
 
 module.exports = router;

@@ -1,36 +1,38 @@
+require('dotenv').config(); // MUST be first
+
 const app = require('./app');
 const connectDB = require('./config/db');
 const { PORT } = require('./config/env');
 
-const DEFAULT_PORT = Number(PORT) || 5000;
-const MAX_PORT_RETRIES = 10;
+const listen = (port) => {
+  const numericPort = Number(port);
 
-const startServer = (port, attempt = 0) => {
-  const server = app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
-  });
+  return new Promise((resolve, reject) => {
+    const server = app.listen(numericPort, () => {
+      console.log(`Server running on http://localhost:${numericPort}`);
+      resolve(server);
+    });
 
-  server.on('error', (error) => {
-    if (error.code === 'EADDRINUSE' && attempt < MAX_PORT_RETRIES) {
-      const nextPort = port + 1;
-      console.warn(`Port ${port} is in use. Retrying on ${nextPort}...`);
-      startServer(nextPort, attempt + 1);
-      return;
-    }
+    server.once('error', (error) => {
+      if (error.code === 'EADDRINUSE') {
+        console.log(`Port ${numericPort} is in use. Retrying on ${numericPort + 1}...`);
+        listen(numericPort + 1).then(resolve).catch(reject);
+        return;
+      }
 
-    console.error('Failed to start server:', error.message);
-    process.exit(1);
+      reject(error);
+    });
   });
 };
 
-const bootstrap = async () => {
+const startServer = async () => {
   try {
-    await connectDB(); // connect to database
-    startServer(DEFAULT_PORT);
+    await connectDB();
+    await listen(PORT);
   } catch (error) {
     console.error('Server startup failed:', error.message);
     process.exit(1);
   }
 };
 
-bootstrap();
+startServer();

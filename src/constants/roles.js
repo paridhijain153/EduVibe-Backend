@@ -1,7 +1,12 @@
-export const ROLES = {
+const ROLES = {
   STUDENT: 'student',
   INSTRUCTOR: 'instructor',
   ADMIN: 'admin',
 };
 
-export const ALL_ROLES = Object.values(ROLES);
+const ALL_ROLES = Object.values(ROLES);
+
+module.exports = {
+  ROLES,
+  ALL_ROLES,
+};
